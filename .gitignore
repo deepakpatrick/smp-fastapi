@@ -1,0 +1,6 @@
+__pycache__
+virtualenv/
+.env
+main_approach_1.py
+main_approach_2.py
+main_approach_3.py
