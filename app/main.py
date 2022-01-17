@@ -34,7 +34,7 @@ app.include_router(votes.router)
 # Home page or Root
 @app.get("/")
 async def root():
-    return {"message":"hello world"}
+    return {"message":"My first new project"}
 
      
      
