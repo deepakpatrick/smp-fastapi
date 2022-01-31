@@ -6,7 +6,7 @@ import pytest
 def test_root(client):
     response = client.get("/")
     print(response.json().get('message'))
-    assert response.json().get('message') == "SMP Fastapi comprehensive - now syncs with docker container - using bind service"
+    assert response.json().get('message') == "SMP Fastapi - deployed from CI/CD"
     assert response.status_code == 200
 
 def test_create_user(client):
