@@ -34,7 +34,7 @@ app.include_router(votes.router)
 # Home page or Root
 @app.get("/")
 async def root():
-    return {"message":"SMP Fastapi - deployed from CI/CD"}
+    return {"message":"SMP Fastapi - deployed from CI/CD - for heroku and ubuntu server VM (prod)"}
 
      
      
