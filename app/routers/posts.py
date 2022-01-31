@@ -41,7 +41,7 @@ async def get_posts(db: Session = Depends(database.get_db),
                 models.Votes, 
                 models.Votes.social_media_post_id == models.SocialMediaPosts.id,
                 isouter=True).group_by(models.SocialMediaPosts.id).filter(models.SocialMediaPosts.title.contains(search)).limit(limit).offset(skip).all()
-                                             
+    print(posts)                                       
     return posts
 
 '''
@@ -54,7 +54,7 @@ async def create_posts(smp_create: schemas.SocialMediaPostCreate,
                        ):
     
     
-    
+    print(smp_create)
     # assign social_media_posts table column name values with values received from body of post request
     # new_post = models.SocialMediaPosts(title = smp_create.title,
     #                        contents = smp_create.contents,
@@ -62,7 +62,7 @@ async def create_posts(smp_create: schemas.SocialMediaPostCreate,
     
     ######### or use the python dictionary unpacking ##########
     new_post = models.SocialMediaPosts(owner_id = current_user.id, **smp_create.dict()) # this eliminates remembering individual json fields/column names
-    
+    print(new_post)
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
@@ -76,11 +76,11 @@ async def get_post(id: int,
                    db: Session = Depends(database.get_db),
                    current_user: str = Depends(oauth2.get_current_user)
                    ):
-    post_query1 = db.query(models.SocialMediaPosts).filter(models.SocialMediaPosts.id == id)
-    post1 = post_query1.first() 
-    if post1.owner_id != current_user.id:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail=f"Not authorized to perform this operation")
+    # post_query1 = db.query(models.SocialMediaPosts).filter(models.SocialMediaPosts.id == id)
+    # post1 = post_query1.first() 
+    # if post1.owner_id != current_user.id:
+    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+    #                         detail=f"Not authorized to perform this operation")
     # .first() gets the first match. without this trying to locate goes in recursive unending loop
     post_query2 = db.query(models.SocialMediaPosts, func.count(models.Votes.social_media_post_id).label("votes")).join(
                 models.Votes, 
@@ -109,8 +109,8 @@ async def delete_post(id: int,
                             detail=f"postid {id} not found")    
     
     if post.owner_id != current_user.id:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail=f"Not authorized to perform this operation")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail=f"Forbidden to perform this operation")
         
     post_query.delete(synchronize_session=False) # if id found then delete it    
     db.commit()    
@@ -132,8 +132,8 @@ async def update_post(id: int,
                             detail=f"postid {id} not found")
     
     if post.owner_id != current_user.id:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail=f"Not authorized to perform this operation")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail=f"Forbidden to perform this operation")
     
     post_query.update(smp_update.dict(), synchronize_session=False)
     db.commit()

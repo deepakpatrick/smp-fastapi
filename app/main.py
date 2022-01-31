@@ -34,7 +34,7 @@ app.include_router(votes.router)
 # Home page or Root
 @app.get("/")
 async def root():
-    return {"message":"SMP Fastapi comprehensive"}
+    return {"message":"SMP Fastapi comprehensive - now syncs with docker container - using bind service"}
 
      
      
